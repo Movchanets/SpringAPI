@@ -1,14 +1,17 @@
 package Shop.Controllers;
 
 import Shop.DTO.CategoryDTO;
+
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-
+@AllArgsConstructor
 public class HomeController {
+
     private static List<CategoryDTO> list = new ArrayList<CategoryDTO>();
 
     @PostMapping("/add")
