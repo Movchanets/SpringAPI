@@ -16,4 +16,8 @@ public class CategoryEntity {
     private  int id;
     @Column(nullable = false)
     private String name;
+    @Column(nullable = true)
+    private String urlImage;
+    @Column(nullable = true)
+    private String description;
 }
