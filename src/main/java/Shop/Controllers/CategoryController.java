@@ -3,7 +3,9 @@ package Shop.Controllers;
 
 import Shop.DTO.category.CategoryItemDTO;
 import Shop.DTO.category.CreateCategoryDTO;
+import Shop.DTO.category.UpdateCategoryDTO;
 import Shop.mapper.CategoryMapper;
+import Shop.repositories.ProductImagesRepository;
 import Shop.storage.StorageService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -29,6 +31,7 @@ public class CategoryController {
     private final StorageService storageService;
     private final CategoryMapper categoryMapper;
     private final CategoryRepository categoryRepository;
+
 
     @GetMapping("/get")
     public ResponseEntity<List<CategoryItemDTO>> index() {
@@ -79,15 +82,17 @@ public class CategoryController {
 
     @PutMapping("/edit/{id}")
 
-    public ResponseEntity<CategoryItemDTO> update(@PathVariable("id") int id,@Valid @RequestBody CreateCategoryDTO categoryDTO) {
+    public ResponseEntity<CategoryItemDTO> update(@PathVariable("id") int id,@Valid @RequestBody UpdateCategoryDTO categoryDTO) {
         Optional<CategoryEntity> categoryEntityOptional = categoryRepository.findById(id);
 
         if (categoryEntityOptional.isPresent()) {
             CategoryEntity _category = categoryEntityOptional.get();
             _category.setName(categoryDTO.getName());
-            if (_category.getUrlImage() != null) {
-
-                storageService.delete(_category.getUrlImage());
+            _category.setDescription(categoryDTO.getDescription());
+            if (categoryDTO.getBase64()  != null&&categoryDTO.getBase64() != "") {
+                    if(_category.getUrlImage() != null){
+                        storageService.delete(_category.getUrlImage());
+                    }
                 String filename = storageService.save(categoryDTO.getBase64());
                 _category.setUrlImage(filename);
             }

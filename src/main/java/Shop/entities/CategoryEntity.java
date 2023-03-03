@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,4 +22,6 @@ public class CategoryEntity {
     private String urlImage;
     @Column(nullable = true)
     private String description;
+    @OneToMany(targetEntity = ProductEntity.class, mappedBy = "category")
+    private List<ProductEntity> products;
 }
