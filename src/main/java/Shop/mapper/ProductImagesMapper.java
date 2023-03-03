@@ -12,7 +12,8 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface ProductImagesMapper {
-    ProductImageDTO categoryItemDTOByCategory(ProductImage image);
+    ProductImageDTO imageDTObyImage(ProductImage image);
 
-    List<ProductImageDTO> categoryItemDTObyCategories(List<ProductImage> images);
+    List<ProductImageDTO> imagesDTObyImages(List<ProductImage> images);
+
 }

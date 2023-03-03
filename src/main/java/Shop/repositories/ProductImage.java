@@ -6,6 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,10 +18,13 @@ public class ProductImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String urlImage;
-    @ManyToOne(targetEntity = ProductEntity.class)
+    @Column(length = 5000, nullable = false)
+    private String name;
+    private int priority;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dateCreated;
+    @ManyToOne
+    @JoinColumn(name="product_id", nullable = false)
     private ProductEntity product;
-    public ProductImage (String urlImage, ProductEntity product){
-        this.urlImage = urlImage;
-    }
-}
+    private boolean isDelete;}
+

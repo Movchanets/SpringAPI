@@ -21,5 +21,5 @@ public class CreateProductDTO {
     @NotNull(message = "Category is mandatory")
     private int categoryId;
     @NotNull(message = "Image is mandatory")
-    private List<String> base64;
+    private List<ProductImageDTO> base64;
 }

@@ -7,6 +7,7 @@ package Shop.entities;
         import lombok.Data;
         import lombok.NoArgsConstructor;
 
+        import java.util.Date;
         import java.util.ArrayList;
         import java.util.List;
 
@@ -19,6 +20,9 @@ public class ProductEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private  int id;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dateCreated;
+    private boolean isDelete;
     @Column(nullable = false)
     private String name;
     @Column(nullable = true)
@@ -26,8 +30,9 @@ public class ProductEntity {
     @Column(nullable = false)
     @Min(value = 0, message = "Price must be greater than 0")
     private double price;
-    @OneToMany(targetEntity = ProductImage.class, mappedBy = "product" , cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<ProductImage> productImages = new ArrayList<>();
-    @ManyToOne(targetEntity = CategoryEntity.class)
-    private CategoryEntity category;
+    @OneToMany(mappedBy="product")
+    private List<ProductImage> productImages;
+    @ManyToOne
+    @JoinColumn(name="category_id", nullable = false)
+    private CategoryEntity category ;
 }
