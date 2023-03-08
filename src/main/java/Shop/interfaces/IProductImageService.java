@@ -14,7 +14,7 @@ import java.util.List;
 public interface IProductImageService {
 
 
-        ProductImage create(ProductImageDTO model, ProductEntity product);
+
         void delete(String name);
 
 }

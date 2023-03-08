@@ -6,12 +6,13 @@ import Shop.DTO.category.CreateCategoryDTO;
 import Shop.DTO.category.UpdateCategoryDTO;
 import Shop.Services.CategoryService;
 import Shop.mapper.CategoryMapper;
-import Shop.repositories.ProductImagesRepository;
+
 import Shop.storage.StorageService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.validation.FieldError;
@@ -35,10 +36,10 @@ public class CategoryController {
     public ResponseEntity<List<CategoryItemDTO>> index() {
         return new ResponseEntity<>(categoryService.get(), HttpStatus.OK);
     }
-    @PostMapping("create")
-    public ResponseEntity<CategoryItemDTO> create(@Valid @RequestBody CreateCategoryDTO model) {
+    @PostMapping(value = "create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<CategoryItemDTO> create(@ModelAttribute @Valid CreateCategoryDTO model) {
         var result = categoryService.create(model);
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
     @GetMapping("/get/{id}")
     public ResponseEntity<CategoryItemDTO> getCategoryById(@PathVariable("id") int categoryId) {

@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -21,5 +22,5 @@ public class CreateProductDTO {
     @NotNull(message = "Category is mandatory")
     private int categoryId;
     @NotNull(message = "Image is mandatory")
-    private List<ProductImageDTO> base64;
+    private List<MultipartFile> files;
 }

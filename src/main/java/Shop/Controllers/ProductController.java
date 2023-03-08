@@ -12,13 +12,14 @@ import Shop.entities.ProductEntity;
 import Shop.mapper.ProductImagesMapper;
 import Shop.mapper.ProductMapper;
 import Shop.repositories.ProductImage;
-import Shop.repositories.ProductImagesRepository;
+
 import Shop.repositories.ProductRepository;
 import Shop.storage.StorageService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.validation.FieldError;
@@ -39,8 +40,8 @@ public class ProductController {
         return new ResponseEntity<>(productService.get(), HttpStatus.OK);
     }
 
-    @PostMapping("create")
-    public ResponseEntity<ProductItemDTO> create(@Valid @RequestBody CreateProductDTO model) {
+    @PostMapping(value = "create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ProductItemDTO> create(@ModelAttribute @Valid CreateProductDTO model) {
        try {
               var result = productService.create(model);
               return new ResponseEntity<>(result, HttpStatus.OK);
