@@ -20,6 +20,7 @@ import Shop.storage.StorageService;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -33,9 +34,9 @@ public class ProductService implements IProductService {
     public List<ProductItemDTO> get() {
         var products = productRepository.findAll();
         var result = new ArrayList<ProductItemDTO>();
-        for (var p:products) {
-            var item = productMapper.productItemDTOByProducts(p);
-            for(var img : p.getProductImages())
+        for (var p : products) {
+            var item = productMapper.productItemDTOByProduct(p);
+            for (var img : p.getProductImages())
                 item.getFiles().add(img.getName());
             result.add(item);
         }
@@ -54,7 +55,7 @@ public class ProductService implements IProductService {
         p.setCategory(cat);
         p.setDelete(false);
         productRepository.save(p);
-        int priority=1;
+        int priority = 1;
         for (var img : model.getFiles()) {
             var file = storageService.saveMultipartFile(img);
             ProductImage pi = new ProductImage();
@@ -71,16 +72,75 @@ public class ProductService implements IProductService {
 
     @Override
     public ProductItemDTO getById(int id) {
+        var productOptinal = productRepository.findById(id);
+        if (productOptinal.isPresent()) {
+            var product = productOptinal.get();
+            var data = productMapper.productItemDTOByProduct(product);
+            for (var img : product.getProductImages())
+                data.getFiles().add(img.getName());
+            return data;
+        }
         return null;
     }
 
     @Override
     public ProductItemDTO update(int id, UpdateProductDTO model) {
+        var p = productRepository.findById(id);
+        if (p.isPresent()) {
+            var product = p.get();
+            for (var name : model.getRemoveFiles()) {
+                var pi = productImageRepository.findByName(name);
+                if (pi != null) {
+                    productImageRepository.delete(pi);
+                    storageService.delete(name);
+                }
+            }
+            var cat = new CategoryEntity();
+            cat.setId(model.getCategory_id());
+            product.setName(model.getName());
+            product.setDescription(model.getDescription());
+            product.setPrice(model.getPrice());
+            product.setDateCreated(new Date());
+            product.setCategory(cat);
+            productRepository.save(product);
+            var productImages = product.getProductImages();
+            int priority = 1;
+            for (var pi : productImages) {
+                if (pi.getPriority() > priority)
+                    priority = pi.getPriority();
+            }
+            priority++;
+            for (var img : model.getFiles()) {
+                var file = storageService.saveMultipartFile(img);
+                ProductImage pi = new ProductImage();
+                pi.setName(file);
+                pi.setDateCreated(new Date());
+                pi.setPriority(priority);
+                pi.setDelete(false);
+                pi.setProduct(product);
+                productImageRepository.save(pi);
+                priority++;
+            }
+        }
+
         return null;
     }
 
     @Override
     public void delete(int id) {
+        Optional<ProductEntity> p = productRepository.findById(id);
+        if (p.isPresent()) {
+            for (var pi : p.get().getProductImages()) {
+
+                if (pi != null) {
+                    storageService.delete(pi.getName());
+                    productImageRepository.delete(pi);
+
+                }
+            }
+        }
+        productRepository.deleteById(id);
+
 
     }
 }

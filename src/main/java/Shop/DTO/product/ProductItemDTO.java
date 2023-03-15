@@ -18,5 +18,6 @@ public class ProductItemDTO {
     private List<String> files = new ArrayList<>();
     private String description;
     private String category;
+     private int category_id;
 
 }

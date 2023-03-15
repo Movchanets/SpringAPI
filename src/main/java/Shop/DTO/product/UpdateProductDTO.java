@@ -4,7 +4,9 @@ import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.Min;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -17,7 +19,9 @@ public class UpdateProductDTO {
 
     @Min(value = 0, message = "Price must be greater than 0")
     private double price;
-    private int categoryId;
+    private int category_id;
     @Nullable
-    private List<String> base64;
+    private List<String> removeFiles = new ArrayList<>();
+    @Nullable
+    private List<MultipartFile> files = new ArrayList<>();
 }

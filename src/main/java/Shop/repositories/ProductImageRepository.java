@@ -7,4 +7,5 @@ package Shop.repositories;
 @Repository
 public interface ProductImageRepository extends JpaRepository<ProductImage, Integer> {
 
+        ProductImage findByName(String name);
 }

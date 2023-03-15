@@ -73,11 +73,21 @@ public class ProductController {
         }
     }
 
-    @PutMapping("/edit/{id}")
+    @PutMapping(value = "/update/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ProductItemDTO> edit(@PathVariable("id") int id,
+                                                @ModelAttribute UpdateProductDTO model) {
+        var result = productService.update(id, model);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
 
-    public ResponseEntity<ProductItemDTO> update(@PathVariable("id") int id,
-                                                 @Valid @RequestBody UpdateProductDTO productDTO) {
-    return new ResponseEntity<>(productService.update(id, productDTO), HttpStatus.OK);
+    @GetMapping("{id}")
+    public ResponseEntity<ProductItemDTO> getProductById(@PathVariable("id") int id) {
+        var product = productService.getById(id);
+        if(product!=null)
+        {
+            return new ResponseEntity<>(product, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 
 
