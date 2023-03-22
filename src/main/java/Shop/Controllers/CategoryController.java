@@ -34,16 +34,31 @@ public class CategoryController {
 
     @GetMapping("/get")
     public ResponseEntity<List<CategoryItemDTO>> index() {
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         return new ResponseEntity<>(categoryService.get(), HttpStatus.OK);
     }
     @PostMapping(value = "create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<CategoryItemDTO> create(@ModelAttribute @Valid CreateCategoryDTO model) {
         var result = categoryService.create(model);
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
     @GetMapping("/get/{id}")
     public ResponseEntity<CategoryItemDTO> getCategoryById(@PathVariable("id") int categoryId) {
         var category = categoryService.getById(categoryId);
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         if(category!=null)
         {
             return new ResponseEntity<>(category, HttpStatus.OK);
@@ -54,6 +69,11 @@ public class CategoryController {
     public ResponseEntity<CategoryItemDTO> update(@PathVariable("id") int categoryId,
                                                   @RequestBody UpdateCategoryDTO model) {
         var category = categoryService.update(categoryId, model);
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         if(category!=null)
         {
             return new ResponseEntity<>(category, HttpStatus.OK);
@@ -63,6 +83,11 @@ public class CategoryController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> delete(@PathVariable("id") int categoryId) {
         categoryService.delete(categoryId);
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         return new ResponseEntity<>("Катагорія знищена.", HttpStatus.OK);
     }
 //    private final StorageService storageService;

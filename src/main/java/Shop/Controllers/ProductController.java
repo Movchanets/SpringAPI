@@ -37,12 +37,22 @@ public class ProductController {
     private final ProductService productService;
     @GetMapping("/get")
     public ResponseEntity<List<ProductItemDTO>> index() {
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         return new ResponseEntity<>(productService.get(), HttpStatus.OK);
     }
 
     @PostMapping(value = "create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ProductItemDTO> create(@ModelAttribute @Valid CreateProductDTO model) {
-       try {
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        try {
               var result = productService.create(model);
               return new ResponseEntity<>(result, HttpStatus.OK);
        }
@@ -56,6 +66,11 @@ public class ProductController {
     @DeleteMapping("/delete/{id}")
     private ResponseEntity<String> delete(@PathVariable("id") int id) {
         try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        try {
             productService.delete(id);
             return new ResponseEntity<>("Deleted", HttpStatus.OK);
         } catch (Exception e) {
@@ -65,6 +80,11 @@ public class ProductController {
 
     @GetMapping("/get/{id}")
     public ResponseEntity<ProductItemDTO> get(@PathVariable("id") int id) {
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         try {
             var result = productService.getById(id);
             return new ResponseEntity<>(result, HttpStatus.OK);
@@ -76,12 +96,22 @@ public class ProductController {
     @PutMapping(value = "/update/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ProductItemDTO> edit(@PathVariable("id") int id,
                                                 @ModelAttribute UpdateProductDTO model) {
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         var result = productService.update(id, model);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @GetMapping("{id}")
     public ResponseEntity<ProductItemDTO> getProductById(@PathVariable("id") int id) {
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         var product = productService.getById(id);
         if(product!=null)
         {

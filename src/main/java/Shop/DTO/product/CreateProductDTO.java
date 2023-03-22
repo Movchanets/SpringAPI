@@ -14,7 +14,7 @@ public class CreateProductDTO {
     @NotBlank(message = "Name is mandatory")
     @Length(min = 3, max = 50, message = "Name must be between 3 and 50 characters")
     private String name;
-    @Length(min = 10, max = 1000, message = "Description must be between 10 and 1000 characters")
+   // @Length(min = 10, max = 10000, message = "Description must be between 10 and 10000 characters")
     private String description;
     @NotNull(message = "Price is mandatory")
     @Min(value = 0, message = "Price must be greater than 0")

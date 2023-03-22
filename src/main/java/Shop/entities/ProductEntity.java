@@ -2,7 +2,9 @@ package Shop.entities;
 
         import Shop.repositories.ProductImage;
         import jakarta.persistence.*;
+        import jakarta.validation.constraints.Max;
         import jakarta.validation.constraints.Min;
+        import jakarta.validation.constraints.Size;
         import lombok.AllArgsConstructor;
         import lombok.Data;
         import lombok.NoArgsConstructor;
@@ -27,7 +29,9 @@ public class ProductEntity {
     private boolean isDelete;
     @Column(nullable = false)
     private String name;
-    @Column(nullable = true)
+    @Column(nullable = true, length = 10000)
+   // @Max(value = 10000, message = "Description must be less than 10000 characters")
+    @Size(min = 10,max = 10000, message = "Description must be  more than 10 and less than 10000 characters")
     private String description;
     @Column(nullable = false)
     @Min(value = 0, message = "Price must be greater than 0")

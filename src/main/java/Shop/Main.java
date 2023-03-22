@@ -1,5 +1,6 @@
 package Shop;
 
+import Shop.Services.SeedService;
 import Shop.storage.StorageProperties;
 import Shop.storage.StorageService;
 import org.springframework.boot.CommandLineRunner;
@@ -19,10 +20,12 @@ public class Main {
     }
 
     @Bean
-    CommandLineRunner init(StorageService storageService) {
+    CommandLineRunner init(StorageService storageService, SeedService seedService) {
         return (args) -> {
             try {
                 storageService.init();
+                seedService.seedRoleData();
+                seedService.seedUserData();
             } catch (Exception e) {
                 e.printStackTrace();
             }

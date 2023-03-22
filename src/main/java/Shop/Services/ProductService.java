@@ -72,9 +72,9 @@ public class ProductService implements IProductService {
 
     @Override
     public ProductItemDTO getById(int id) {
-        var productOptinal = productRepository.findById(id);
-        if (productOptinal.isPresent()) {
-            var product = productOptinal.get();
+        var productOptional = productRepository.findById(id);
+        if (productOptional.isPresent()) {
+            var product = productOptional.get();
             var data = productMapper.productItemDTOByProduct(product);
             for (var img : product.getProductImages())
                 data.getFiles().add(img.getName());
