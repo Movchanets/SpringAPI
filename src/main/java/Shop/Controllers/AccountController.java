@@ -1,5 +1,8 @@
 package Shop.Controllers;
 
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +17,7 @@ import Shop.Services.AccountService;
 @RestController
 @RequestMapping("/account")
 @RequiredArgsConstructor
+
 public class AccountController {
     private final AccountService service;
 

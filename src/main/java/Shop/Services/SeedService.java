@@ -36,6 +36,7 @@ public class SeedService implements ISeedService {
 
     @Override
     public void seedUserData() {
+
         if(userRepository.count() > 0) return;
         var user = new UserEntity().builder()
                 .email("admin@gmail.com")

@@ -19,7 +19,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name="tbl_users")
-public class UserEntity implements UserDetails {
+public class UserEntity   {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -38,42 +38,5 @@ public class UserEntity implements UserDetails {
     private List<UserRoleEntity> userRoles = new ArrayList<>();
 
     //Повертаємо список ролей користувача
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        String [] userRoles = this.userRoles.stream()                                      //витягується списочок ролей, які є у юзера
-                .map((role) -> role.getRole().getName()).toArray(String []:: new);
-        Collection<GrantedAuthority> authorityCollections =                               //створюється нова колекція authorityCollections
-                AuthorityUtils.createAuthorityList(userRoles);
-        return authorityCollections;
-    }
 
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
-    public String getUsername() {
-        return email;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
 }

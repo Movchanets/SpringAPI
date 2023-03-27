@@ -1,5 +1,10 @@
-package shop.configuration.security;
+package Shop.configuration.security;
 
+
+import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.security.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -7,13 +12,20 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import Shop.entities.UserEntity;
 import Shop.repositories.UserRepository;
 import Shop.repositories.UserRoleRepository;
+
+import java.util.Arrays;
+import java.util.Collection;
 
 @Configuration
 @RequiredArgsConstructor
@@ -24,20 +36,26 @@ public class ApplicationConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-
-        return new UserDetailsService() {
+        var userDetailService = new UserDetailsService() {
             @Override
             public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-                var user = repository.findByEmail(username).orElseThrow(()
+                var userEntity = repository.findByEmail(username).orElseThrow(()
                         -> new UsernameNotFoundException("User not found"));
-                var roles = userRoleRepository.findByUser(user);
-                user.setUserRoles(roles);
-                return user;
+                //Інформація про користувача і список його ролей
+                var roles = getRoles(userEntity);
+                var userDetails = new User(userEntity.getEmail(), userEntity.getPassword(), roles);
+                return userDetails; // якщо є, то створюється новий юзер на основі того, що в БД
+            }
+            private Collection<? extends GrantedAuthority> getRoles(UserEntity userEntity) {
+                var roles = userRoleRepository.findByUser(userEntity);
+                String [] userRoles = roles.stream()                                      //витягується списочок ролей, які є у юзера
+                        .map((role) -> role.getRole().getName()).toArray(String []:: new);
+                Collection<GrantedAuthority> authorityCollections =                               //створюється нова колекція authorityCollections
+                        AuthorityUtils.createAuthorityList(userRoles);
+                return authorityCollections;
             }
         };
-        //return username -> repository.findByEmail(username).get();
-        //.orElseThrow(()
-        //
+        return userDetailService;
     }
 
     @Bean
@@ -47,6 +65,8 @@ public class ApplicationConfig {
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }
+
+
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
