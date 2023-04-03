@@ -33,7 +33,9 @@ public class UserEntity   {
     private String phone;
     @Column(length = 200, nullable = false)
     private String password;
-
+    @Column(length = 20, nullable = true)
+    @Enumerated(EnumType.STRING)
+    private Provider provider;
     @OneToMany(mappedBy = "user")
     private List<UserRoleEntity> userRoles = new ArrayList<>();
 

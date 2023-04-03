@@ -2,8 +2,10 @@ package Shop.Controllers;
 
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,6 +23,7 @@ import Shop.Services.AccountService;
 public class AccountController {
     private final AccountService service;
 
+
     @PostMapping("/register")
     public ResponseEntity<AuthResponseDTO> register(
             @RequestBody RegisterDTO request
@@ -31,6 +34,9 @@ public class AccountController {
     public ResponseEntity<AuthResponseDTO> authenticate(
             @RequestBody LoginDTO request
     ) {
-        return ResponseEntity.ok(service.login(request));
+        var auth = service.login(request);
+        if(auth==null)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        return ResponseEntity.ok(auth);
     }
 }

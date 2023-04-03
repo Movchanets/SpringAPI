@@ -12,4 +12,5 @@ import lombok.NoArgsConstructor;
 public class LoginDTO {
     private String email;
      String password;
+    private String reCaptchaToken;
 }

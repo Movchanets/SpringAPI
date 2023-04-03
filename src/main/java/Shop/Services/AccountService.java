@@ -3,8 +3,11 @@ package Shop.Services;
 import Shop.DTO.Account.LoginDTO;
 import Shop.DTO.Account.AuthResponseDTO;
 import Shop.DTO.Account.RegisterDTO;
+import Shop.configuration.captcha.CaptchaSettings;
+import Shop.configuration.captcha.GoogleResponse;
 import Shop.configuration.security.JwtService;
 import Shop.constants.Roles;
+import Shop.entities.Provider;
 import Shop.entities.UserEntity;
 import Shop.entities.UserRoleEntity;
 import Shop.repositories.RoleRepository;
@@ -15,8 +18,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import Shop.repositories.UserRoleRepository;
+import org.springframework.web.client.RestOperations;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +32,9 @@ public class AccountService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final CaptchaSettings captchaSettings;
+    private final RestOperations restTemplate;
+    protected static final String RECAPTCHA_URL_TEMPLATE = "https://www.google.com/recaptcha/api/siteverify?secret=%s&response=%s";
 
     public AuthResponseDTO register(RegisterDTO request) {
         var user = UserEntity.builder()
@@ -34,7 +42,8 @@ public class AccountService {
                 .lastName(request.getLastName())
                 .email(request.getEmail())
                 .phone("098 34 34 221")
-                 .password(passwordEncoder.encode(request.getPassword()))
+                .provider(Provider.LOCAL)
+                .password(passwordEncoder.encode(request.getPassword()))
                 .build();
         repository.save(user);
         var role = roleRepository.findByName(Roles.USER);
@@ -51,6 +60,12 @@ public class AccountService {
     }
 
     public AuthResponseDTO login(LoginDTO request) {
+        String url = String.format(RECAPTCHA_URL_TEMPLATE, captchaSettings.getSecret(), request.getReCaptchaToken());
+        final GoogleResponse googleResponse = restTemplate.getForObject(url, GoogleResponse.class);
+        if (!googleResponse.isSuccess()) {   //перевіряємо чи запит успішний
+            //throw new Exception("reCaptcha was not successfully validated");
+            return null;
+        }
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
@@ -65,4 +80,18 @@ public class AccountService {
                 .build();
     }
 
+    public void processOAuthPostLogin(String email) {
+        Optional<UserEntity> existUser = repository.findByEmail(email);
+        if (!existUser.isPresent()) {
+
+            UserEntity newUser = UserEntity.builder()
+                    .email(email)
+                    .provider(Provider.GOOGLE)
+                    .build();
+
+            repository.save(newUser);
+
+
+        }
+    }
 }

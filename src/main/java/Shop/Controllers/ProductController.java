@@ -15,6 +15,7 @@ import Shop.repositories.ProductImage;
 
 import Shop.repositories.ProductRepository;
 import Shop.storage.StorageService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
@@ -33,6 +34,7 @@ import java.util.*;
 @RestController
 @AllArgsConstructor
 @RequestMapping("api/products")
+@SecurityRequirement(name = "Shop-api")
 public class ProductController {
     private final ProductService productService;
     @GetMapping("/get")
