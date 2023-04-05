@@ -27,9 +27,7 @@ public class JwtService {
 
     private final UserRoleRepository userRoleRepository;
     private final String jwtSecret = "404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970";  //ключ, яким ми шифруємо (будь-які букви чи цифри)
-    private final String jwtIssuer = "step.io";   //вказує хто власник цього токена. Можна вписати ім'я свого домена
 
-    //метод призначений для того, щоб для визначеного юзера зробити jwt token
     public String generateAccessToken(UserEntity user) {
 
         var roles = userRoleRepository.findByUser(user);
@@ -38,10 +36,10 @@ public class JwtService {
                 .setSubject(format("%s,%s", user.getId(), user.getEmail()))
                 .claim("email", user.getEmail())
                 .claim("phone", user.getPhone())
-                //.claim("image", user.getImage())
+                .claim("image", user.getImg())
                 .claim("roles", roles.stream()                                      //витягується списочок ролей, які є у юзера
                         .map((role) -> role.getRole().getName()).toArray(String []:: new))
-                .setIssuer(jwtIssuer) //записуємо хто власник токена
+                .setIssuer( user.getProvider().name()) //записуємо хто власник токена
                 .setIssuedAt(new Date(System.currentTimeMillis()))  //коли був створений токен
                 .setExpiration(new Date(System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000)) // 1 week  зазначаємо скільки часу буде жити токен
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)  //шифруємо токен за допомогою сікретного ключа

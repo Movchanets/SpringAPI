@@ -36,6 +36,8 @@ public class UserEntity   {
     @Column(length = 20, nullable = true)
     @Enumerated(EnumType.STRING)
     private Provider provider;
+    @Column(length = 200, nullable = true)
+    private String img;
     @OneToMany(mappedBy = "user")
     private List<UserRoleEntity> userRoles = new ArrayList<>();
 

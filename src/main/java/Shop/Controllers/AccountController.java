@@ -1,5 +1,9 @@
 package Shop.Controllers;
 
+import Shop.DTO.Account.ChangeAvatarDTO;
+import Shop.DTO.Google.GoogleAuthDTO;
+import Shop.Services.GoogleAuthService;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -22,8 +26,23 @@ import Shop.Services.AccountService;
 
 public class AccountController {
     private final AccountService service;
+    private final GoogleAuthService googleAuthService;
+    @PostMapping("/google-auth")
+    public ResponseEntity<AuthResponseDTO> googleLogin(@RequestBody GoogleAuthDTO googleAuth) {
+        try {
+            GoogleIdToken.Payload googleUserInfo = googleAuthService.verify(googleAuth.getToken());
+            return ResponseEntity.ok(service.GoogleAuth(googleUserInfo));
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+    @PostMapping("/set-avatar")
+    public String setAvatar(
+            @RequestBody ChangeAvatarDTO request
+    ) {
+     return service.ChangeImage(request);
 
-
+    }
     @PostMapping("/register")
     public ResponseEntity<AuthResponseDTO> register(
             @RequestBody RegisterDTO request
